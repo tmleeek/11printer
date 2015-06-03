@@ -1,0 +1,57 @@
+<ol <?php if ($this->getCollapsed() && !$this->getHasSelection()): ?>style="display:none" <?php endif ?>>
+<?php $show = ($this->getItemsCount() > 1 || !Mage::getStoreConfig('amshopby/general/hide_one_value')) ?>
+<?php if (0 == $this->getDisplayType() && $show): // default ?>
+    <?php foreach ($this->getItems() as $_item): ?>
+        <li>
+            <?php if ($_item->getCount() > 0): ?>
+            <a class="amshopby-price" href="<?php echo $this->urlEscape($_item->getUrl()) ?>"><?php echo $_item->getLabel() ?></a>
+            <?php endif; ?>
+            (<?php echo $_item->getCount() ?>)
+        </li>
+    <?php endforeach ?>
+<?php elseif (1 == $this->getDisplayType() && $show): // dropdown ?>
+    <li>
+        <select onchange="if (this.value) setLocation(this.value)" class="amshopby-select amshopby-ajax-select">
+            <!-- uncomment to show Filter name in the dropdown <option value=""><?php echo $this->getName() ?></option>-->
+            <option value=""></option>
+            <?php foreach ($this->getItems() as $_item): ?>
+            <option  <?php if (Mage::app()->getRequest()->getParam('price') == $_item->getValue()) echo "selected" ?> 
+                value="<?php echo $this->urlEscape($_item->getUrl()) ?>"><?php echo $_item->getLabel() ?> (<?php echo $_item->getCount() ?>)</option>
+            <?php endforeach ?>
+        </select>
+    </li>
+<?php elseif (3 == $this->getDisplayType()): // slider ?>
+<?php
+    $max = $this->_filter->getMaxPriceInt(); 
+    $from = min($this->getPriceFrom(), $max);
+    $to   = min($this->getPriceTo(), $max);
+    
+    if ($from < 0.01 && $to < 0.01){
+        $to = sprintf('%.02f', $max);
+    }
+    $width = 170;
+    
+    $firstOffset =  $from * $width / $max;
+    $secondOffset = $to * $width / $max; 
+    $params = implode(',', array($width, $firstOffset, $secondOffset, $max, 'amshopby-price-'));
+?>
+    <li>
+        <div id="amshopby-slider" class="slider">
+            <div class="handle selected" style="left:<?php echo $firstOffset ?>px"></div>
+            <div class="handle" style="left:<?php echo $secondOffset ?>px"></div>
+        </div>
+        <input type="hidden" id="amshopby-slider-param" value="<?php echo $params ?>" />
+    </li>     
+<?php endif; ?>
+<?php if (Mage::getStoreConfig('amshopby/general/price_from_to')):?>
+        <?php if (2 != $this->getDisplayType()):?><li>&nbsp;</li><?php endif ?>
+        <li>
+            <input type="text" size="2" value="<?php echo $this->getPriceFrom()?>" name="price_from" class="input-text" id="amshopby-price-from" /> - 
+            <input type="text" size="2" value="<?php echo $this->getPriceTo()?>" name="price_to" class="input-text" id="amshopby-price-to"/>
+            <button type="submit" title="<?php echo $this->__('Найти')?>" class="form-button button amshopby-price-find" name="price_find" id="amshopby-price-btn"><span><span><?php echo $this->__('Найти')?></span></span></button>
+        </li> 
+<?php endif ?>
+<li style="display:none">
+<input type="hidden" id="amshopby-price-url" value="<?php echo Mage::helper('amshopby/url')->getFullUrl(array('price'=>'price-from,price-to'))?>" />
+</li>
+</ol>

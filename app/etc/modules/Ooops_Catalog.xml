@@ -1,0 +1,9 @@
+<?xml version="1.0"?>  
+<config>  
+    <modules>  
+        <Ooops_Catalog>  
+            <active>true</active>  
+            <codePool>local</codePool>  
+        </Ooops_Catalog>  
+    </modules>  
+</config> 

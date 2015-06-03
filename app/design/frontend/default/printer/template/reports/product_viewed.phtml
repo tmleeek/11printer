@@ -1,0 +1,117 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+/* @var $this Mage_Reports_Block_item_Viewed */
+?>
+<?php if ($_items = $this->getRecentlyViewedProducts()): ?>
+						<span class="count">(<?php echo count($_items); ?>)</span>
+							<div class="slide">
+								<div class="product-list prgoods">
+									<div class="frame">
+										<h3>Мои товары <span class="count">(<?php echo count($_items); ?>)</span></h3>
+										<button class="btn-prev">Предыдущий</button>
+										
+<div class="block block-list block-viewed">
+    <div class="block-content ">
+		<div class="mask">
+        <ul  id="recently-viewed-items" class="items mini-products-list products-list">
+		<?php foreach ($_items as $_item): ?>
+												<li>
+													<figure>
+														<a href="<?php echo $this->getProductUrl($_item) ?>">
+															<div class="img-holder">
+																<div class="box">
+																	<img src="<?php echo $this->helper('catalog/image')->init($_item, 'thumbnail')->resize(87, 87)->setWatermarkSize('30x10'); ?>" width="87" height="87" alt="<?php echo $this->escapeHtml($this->getProductName()) ?>" />
+																</div>
+															</div>
+														</a>
+														<figcaption>
+															<a href="<?php echo $this->getProductUrl($_item) ?>" class="title"><?php echo $this->helper('catalog/output')->productAttribute($_item, $_item->getName() , 'name') ?></a>
+															<?php echo $this->getPriceHtml($_item, true) ?>
+															<div class="clear"></div>
+																<form action="<?php echo $this->getAddToCartUrl($_item) ?>" method="post" id="product_addtocart_form_<?php echo $_item->getId()?>"<?php if($_item->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
+																	 <?php if(!$_item->isGrouped()): ?>
+																	 <input type="text" name="qty" id="qty" maxlength="12" value="<?php echo ($this->getMinimalQty($_item)?$this->getMinimalQty($_item):1) ?>" class="hidden"/>
+																	 <?php endif; ?>
+																	 <div class="item-counter">
+																		<!--input class="spinner" name="value" value="1"-->
+																		<button class="button btn green btn-basket" type="button" onclick="this.form.submit()"><?php echo $this->__('Купить') ?></button>
+																	</div>
+																	 
+																 </form>
+															
+														</figcaption>
+													</figure>
+												</li>
+        <?php endforeach; ?>
+        </ul>
+    </div>
+</div>
+</div>
+										<button class="btn-next">Следующий</button>
+									</div>
+								</div>
+							</div>
+<?php endif; ?>
+<?php if($this->getRequest()->getControllerName()!='category'): ?>
+<script type="text/javascript">
+	function parseValue() {
+		jQuery(this).val(jQuery(this).siblings('.spinner').val());
+	}
+	if(typeof jQuery.fn.spinner === 'function'){
+		jQuery( ".mini-products-list .spinner" ).spinner({ 
+			min: 1,
+			spin: function() {
+				jQuery(this).siblings('.spinner-text').val(jQuery(this).val());
+				jQuery(this).parent().parent().parent().find('input.hidden').val(jQuery(this).val());
+			},
+			stop: function() {
+				jQuery(this).siblings('.spinner-text').val(jQuery(this).val());
+				jQuery(this).parent().parent().parent().find('input.hidden').val(jQuery(this).val());
+			}
+		}).parent().append('<input class="spinner-text" type="text">');
+		jQuery('.spinner-text').each(parseValue);
+		jQuery('.spinner-text').change(function() {
+			jQuery(this).siblings('.spinner').val(parseInt(jQuery(this).val()));
+		});
+		jQuery('.spinner-text').blur(parseValue);
+	}
+
+	if(typeof jQuery.fn.spinner === 'function'){
+		jQuery( "#slider-range" ).slider({
+			range: true,
+			min: 0,
+			max: 500,
+			values: [ 75, 300 ],
+			slide: function( event, ui ) {
+				jQuery("#min-amount").val( ui.values[ 0 ] );
+				jQuery("#max-amount").val( ui.values[ 1 ] );
+			}
+		});
+		jQuery( "#min-amount" ).val( jQuery( "#slider-range" ).slider( "values", 0 ) );
+		jQuery( "#max-amount" ).val( jQuery( "#slider-range" ).slider( "values", 1 ) );
+	}
+	</script>
+<?php endif; ?>

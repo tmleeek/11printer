@@ -1,0 +1,110 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+
+/**
+ * Shoping cart sidebar
+ *
+ * @var Mage_Checkout_Block_Cart_Minicart $this
+ */
+?>
+<a class="opener purchase" href="#">Мои корзина  <?php echo Mage::helper('checkout')->formatPrice($this->getSubtotal());if(Mage::helper('checkout/cart')->getSummaryCount()!='0'){echo ' - <a class="to_checkout" title="Оформить заказ" href="/checkout/cart/">Оформить заказ</a>';} ?>
+
+</a>
+<div class="slide">
+	<div class="table-holder">
+		<?php
+		$_cartQty = $this->getSummaryCount();
+		if(empty($_cartQty)) {
+			$_cartQty = 0;
+		}
+		?>
+		<div id="minicart-error-message" class="minicart-message"></div>
+		<div id="minicart-success-message" class="minicart-message"></div>
+
+		<div class="minicart-wrapper">
+			<table class="basket-table">
+										<thead>
+											<tr>
+												<th colspan="3" class="cell-1">Наименование товара</th>
+												<th class="cell-2">Удалить</th>
+												<th class="cell-3">Цена</th>
+												<th class="cell-4">Количество</th>
+											</tr>
+										</thead>
+			</table>
+			<?php $_items = $this->getRecentItems() ?>
+			<?php $countItems = count($_items); ?>
+			<?php if($countItems): ?>
+			<?php $i = 1; ?>
+				<div>
+					<ul id="cart-sidebar" class="mini-products-list">
+					
+						<?php foreach($_items as $_item): ?>
+						<li class="item" xmlns="http://www.w3.org/1999/html">
+							<div class="cells cell-1">
+							<?php echo $i;?>
+							</div>
+							<?php echo $this->getItemHtml($_item) ?>
+							</li>
+							<?php $i++; ?>
+						<?php endforeach; ?>
+					</ul>
+				</div>
+				<script type="text/javascript">
+					decorateList('cart-sidebar', 'none-recursive');
+					jQuery('document').ready(function() {
+						var minicartOptions  = {
+							formKey:           "<?php echo $this->getFormKey();?>"
+						}
+						var Mini = new Minicart(minicartOptions);
+						Mini.init();
+					});
+				</script>
+
+				<div id="minicart-widgets">
+					<?php echo $this->getChildHtml('cart_promotion') ?>
+				</div>
+				
+				<table class="basket-table">
+					<tfoot>
+						<tr>
+							<td class="cell-1" colspan="5">Итого, без учета стоимости доставки</td>
+							<td class="cell-2"><?php echo $_cartQty; ?>шт</td>
+							<td class="cell cell-3"><?php echo Mage::helper('checkout')->formatPrice($this->getSubtotal()) ?></td>
+						</tr>
+					</tfoot>
+				</table>
+				<div class="btn-holder">
+					<a href="<?php echo $this->getCheckoutUrl() ?>" class="btn violet">Оформить заказ</a>
+				</div>
+			<?php else: ?>
+				<p class="empty"><?php echo $this->__('You have no items in your shopping cart.') ?></p>
+
+			<?php endif ?>
+		
+		</div>
+	</div>
+</div>

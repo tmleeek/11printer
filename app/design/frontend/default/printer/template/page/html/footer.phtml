@@ -1,0 +1,110 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+				
+				<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('blog')->toHtml();?>
+				<?php if(Mage::getSingleton('cms/page')->getIdentifier() == 'home') : ?>
+					<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('noteblock')->toHtml();?>
+				<?php endif; ?>
+<div class="footer-container">
+    <div class="footer">
+        <?php #echo $this->getChildHtml() ?>
+		<footer id="footer">
+			<div class="container">
+				<div class="holder">
+					<div class="col col-1">
+						<p class="copyright"><?php echo $this->getCopyright() ?></p>
+					</div>
+					<div class="col col-2">
+						<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('production')->toHtml();?>
+					</div>
+					<div class="col col-3">
+						<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('inform')->toHtml();?>
+					</div>
+					<div class="col col-4">
+						<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('contacts')->toHtml();?>
+					</div>
+					<div class="col col-5">
+						<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('payments')->toHtml();?>
+						
+						<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('delivery')->toHtml();?>
+						
+					</div>
+				</div>
+				<div class="footer-bar">
+					<ul>
+						<li id="cmodls">
+							<a class="opener" href="№">Мои принетры</a>
+							<span class="count mnc">(<i>0</i>)</span>
+							<div class="slide">
+								<div class="product-list prmodels">
+									<div class="frame">
+										<h3>Мои принетры <span class="count">(<i>0</i>)</span></h3>
+										<button class="btn-prev">Предыдущий</button>
+										<div class="mask">
+										<ul class="items" id="resmod"></ul>
+											
+										</div>
+										<button class="btn-next">Следующий</button>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li>
+							<a class="opener" href="#">Мои товары</a>
+							
+											<?php echo  $this->getLayout()->createBlock("reports/product_viewed")->setTemplate("reports/product_viewed.phtml")->toHtml();?>
+										
+						</li>
+						<li class="prod_check" rel="<?php echo $count = $this->helper('checkout/cart')->getSummaryCount();?>"><?php echo $this->getChildHtml('minicart_head'); ?></li>
+					</ul>
+				</div>
+			</div>
+		</footer>
+    </div>
+</div>
+<script type="text/javascript">
+											jQuery(document).ready(function () {
+												yourModelsView();
+												jQuery('#resmod li .btn-close').click(function(){
+													var mn = jQuery(this).parent().find('.title').text();
+													jQuery(this).parent().remove();
+													yourModelsViewUpdate(mn);
+												});
+												
+												var prodch = parseInt(jQuery('.prod_check').attr('rel'));
+												console.log('prodch '+ prodch);
+												var mdls = parseInt(jQuery('#cmodls span.count.mnc i').text());
+												console.log('mdls '+ mdls);
+													if(isNaN(prodch)){
+													console.log('prodch NaN');
+													var tcnt = mdls
+												}else{
+												var tcnt = mdls+prodch;}
+												if(tcnt>0){jQuery('.footer-bar').fadeIn('slow');}
+												console.log('footer');
+											});
+										</script>

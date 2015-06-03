@@ -1,0 +1,240 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php
+/**
+ * Category view template
+ *
+ * @see Mage_Catalog_Block_Category_View
+ */
+?>
+<?php
+    $_helper    = $this->helper('catalog/output');
+    $_category  = $this->getCurrentCategory();
+    $_imgHtml   = '';
+    if ($_imgUrl = $_category->getImageUrl()) {
+        $_imgHtml = '<p class="category-image"><img src="'.$_imgUrl.'" alt="'.$this->escapeHtml($_category->getName()).'" title="'.$this->escapeHtml($_category->getName()).'" /></p>';
+        $_imgHtml = $_helper->categoryAttribute($_category, $_imgHtml, 'image');
+    }
+?>
+
+
+	<?php if($_category->getLevel()>3): ?>
+
+	<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+
+	<?php if($this->isContentMode()): ?>
+		<?php echo $this->getCmsBlockHtml() ?>
+
+	<?php elseif($this->isMixedMode()): ?>
+		<?php echo $this->getCmsBlockHtml() ?>
+		<?php echo $this->getProductListHtml() ?>
+
+	<?php else: ?>
+		<?php echo $this->getProductListHtml() ?>
+	<?php endif; ?>
+	<?php else: ?>
+			<?php 
+			$collection1 = Mage::getModel('catalog/category')->getCategories(3);
+			$defcat = $_category->getID();
+			$cat = Mage::getModel('catalog/category')->load($defcat);
+			$subcats = $cat->getChildren();
+			$catname = $_category->getName();
+		?>
+		
+			<div class="print-search" novalidate>
+				<div class="cols">
+					<div class="col">
+						<?php echo $_imgHtml;?>
+						<?php if($_customAttribute = Mage::getResourceModel('catalog/category')->getAttributeRawValue($_category->getId(), "devlink", Mage::app()->getStore()->getId())): ?>
+							<a target="_blank" href="<?php echo  $_customAttribute; ?>" class="more">Узнать больше о <?php echo $catname;?></a>
+						<?php endif; ?>
+					</div>
+					<div class="col search">
+						<input id="inp" type="text" placeholder="Введите модель..." autofocus>
+						<div id="zesults"></div>
+					</div>
+					<div class="col series">
+						<div class="align-left">
+							<h2>Струйный</h2>
+							<?php foreach(explode(',',$subcats) as $subCatid):?>
+							<?php $_category = Mage::getModel('catalog/category')->load($subCatid);
+							$sub_cat = Mage::getModel('catalog/category')->load($_category->getId());
+							$sub_subcats = $sub_cat->getChildren();
+							$subc = count(explode(',',$sub_subcats));
+							if(Mage::getResourceModel('catalog/category')->getAttributeRawValue($_category->getId(), "laser", Mage::app()->getStore()->getId())!=1) :?>
+							
+							<div class="mfilter row" id="ch<?php echo $_category->getId();?>">
+								<input type="checkbox" id="chb<?php echo $_category->getId();?>">
+								<label for="checkbox-<?php echo $_category->getId();?>"><?php echo $_category->getName();?></label>
+							</div>
+							
+							<?php endif; ?>
+							 <?php endforeach;?>
+						</div>
+						<div class="align-left">
+							<h2>Лазерный</h2>
+							<?php foreach(explode(',',$subcats) as $subCatid):?>
+							<?php $_category = Mage::getModel('catalog/category')->load($subCatid);
+							$sub_cat = Mage::getModel('catalog/category')->load($_category->getId());
+							$sub_subcats = $sub_cat->getChildren();
+							$subc = count(explode(',',$sub_subcats));
+							if(Mage::getResourceModel('catalog/category')->getAttributeRawValue($_category->getId(), "laser", Mage::app()->getStore()->getId())==1) :?>
+							
+							<div class="mfilter row" id="ch<?php echo $_category->getId();?>">
+								<input type="checkbox" id="chb<?php echo $_category->getId();?>">
+								<label for="checkbox-<?php echo $_category->getId();?>"><?php echo $_category->getName();?></label>
+							</div>
+							
+							<?php endif; ?>
+							 <?php endforeach;?>
+						</div>
+					</div>
+				</div>
+			</div>
+												
+
+		<div class="col-right sidebar  search-sbar">
+			<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('scontacts')->toHtml();?>
+		</div>
+			
+		<div class="tabset-holder">
+			<div class="container">
+				<div class="inner">
+					<ul class="tabset">
+                        <?php foreach ($collection1 as $cat1):?>
+						<?php $cur_category = $cat1->getId();	
+							$currentUrl = Mage::helper('core/url')->getCurrentUrl();
+						?>
+						<li class="<?php if($currentUrl == $cat1->getUrl()){echo "active";}?>">
+							<a href="<?php echo $cat1->getUrl();?>">
+								<div class="link-holder">
+									<div class="link-frame"><?php echo $cat1->getName();?></div>
+								</div>
+							</a>
+						</li>
+						 <?php endforeach;?>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="tab-list">
+			<div id="tab" class="tab">
+				<div class="print-models">
+						<?php foreach(explode(',',$subcats) as $subCatid):?>
+						<?php $_category = Mage::getModel('catalog/category')->load($subCatid);
+							$sub_cat = Mage::getModel('catalog/category')->load($_category->getId());
+							$sub_subcats = $sub_cat->getChildren();
+							$subc = count(explode(',',$sub_subcats));
+							if($_category->getIsActive()) :?>
+							<h2 class="category-name ch<?php echo $_category->getId();?>"><a href="<?php echo $_category->getURL();?>"><?php echo $_category->getName();?><em class="count">(<?php echo $subc;?>)</em></a></h2>
+							<div class="cols ch<?php echo $_category->getId();?>">
+								<div class="col <?php echo $subc?>">
+									<ul class="list">
+									<?php 	$nummm = floor($subc /7)+1;
+											$ii=1;
+									?>
+									<?php foreach(explode(',',$sub_subcats) as $sub_subCatid):?>
+									  <?php $_sub_category = Mage::getModel('catalog/category')->load($sub_subCatid);?>
+										<li class="<?php echo $ii?>"><a class="prntmodel" href="<?php echo $_sub_category->getUrl();?>">
+										<?php if(Mage::getResourceModel('catalog/category')->getAttributeRawValue($_sub_category->getId(), "popular", Mage::app()->getStore()->getId())==1) :?>
+										<b><?php echo $_category->getName()." ".$_sub_category->getName();?></b>
+										<?php else: ?>
+										<?php echo $_category->getName()." ".$_sub_category->getName();?>
+										<?php endif; ?>
+										</a></li>
+										<?php $ii++;?>
+										<?php if($ii % $nummm == 0){echo '</ul></div><div class="col"><ul class="list">';}?>
+									<?php endforeach;?> 
+									</ul>
+								</div>
+							</div>
+						<?php endif; ?>
+						<?php endforeach;?>
+				</div>
+			</div>
+			<script type="text/javascript">
+			var modelshash = new Object();
+
+			var models = document.getElementsByClassName('prntmodel');
+			for (var i=0; i<models.length; i++){
+				modelshash[models[i].innerHTML] = models[i].getAttribute('href');
+			}
+			
+			jQuery( "#inp" ).keydown(function() {
+				jQuery( "#zesults" ).empty();
+				setTimeout(function () {
+					var input = jQuery( "#inp" ).val();
+					if(input.length > 1){
+						for (var k in modelshash) {
+							if(k.indexOf(input)!= -1){
+							   jQuery( "#zesults" ).append('<a class="outlink" href="'+modelshash[k]+'">'+k+'</a>');
+							   //console.log('key is: ' + k + ', value is: ' + modelshash[k]);
+							}
+						} 
+					}
+					if(jQuery( ".outlink" ).length > 0){
+						jQuery( "#zesults" ).show();
+					}else{
+						jQuery( "#zesults" ).hide();
+					}
+				}, 1);
+			});
+
+			//for (var k in modelshash) {
+				//if (modelshash.hasOwnProperty(k)) {
+				//	console.log('key is: ' + k + ', value is: ' + modelshash[k]);
+				//}
+			//}
+			jQuery(document).ready(function () {
+				jQuery(document).on("click",".chk", function() {
+					chk = jQuery('.chk').size();
+					cnt = jQuery('.checkboxAreaChecked').size();
+					console.log(cnt+' from '+chk);
+					if(jQuery(this).parent().children('.outtaHere').is(":checked")) {
+						if( cnt == 1){
+						  jQuery(".category-name, .print-models .cols").hide();
+						  jQuery("."+jQuery(this).parent().attr("id")).show();
+						}
+					   if(cnt >1){
+						  jQuery("."+jQuery(this).parent().attr("id")).show();
+						}
+					}else{
+						if(cnt > 0){
+							 jQuery("."+jQuery(this).parent().attr("id")).hide();
+						}
+						if(cnt == 0){
+							jQuery(".category-name, .print-models .cols").show();
+						}
+					}
+                });
+    
+	
+});
+			</script>
+		</div>
+	<?php endif; ?>

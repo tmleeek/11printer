@@ -1,0 +1,242 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<div class="amshopby-page-container">
+<?php
+/**
+ * Product list template
+ *
+ * @see Mage_Catalog_Block_Product_List
+ */
+?>
+<?php
+    $_productCollection=$this->getLoadedProductCollection();
+    $_helper = $this->helper('catalog/output');
+?>
+<?php if(!$_productCollection->count()): ?>
+<p class="note-msg"><?php echo $this->__('There are no products matching the selection.') ?></p>
+<?php else: ?>
+<div class="category-products">
+    
+    <?php // List mode ?>
+    <?php if($this->getMode()!='grid'): ?>
+    <?php $_iterator = 0; ?>
+    <ol class="products-list" id="products-list">
+    <?php foreach ($_productCollection as $_product): ?>
+        <li class="item<?php if( ++$_iterator == sizeof($_productCollection) ): ?> last<?php endif; ?>">
+            <?php // Product Image ?>
+            <div class="col-1">
+            <div class="img-holder">
+			<a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image'); ?>" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+            </div>
+            </div>
+			<?php // Product description ?>
+            <div class="product-shop col-2">
+                 <div>
+                    <?php $_productNameStripped = $this->stripTags($_product->getName(), null, true); ?>
+                    <h2 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $_productNameStripped; ?>"><?php echo $_helper->productAttribute($_product, $_product->getName() , 'name'); ?></a></h2>
+                    
+					<?php 
+					$productId = $_product->getId();
+					$product = Mage::getModel('catalog/product')->load($productId);
+                    $tovarvalue = $product->getResource()->getAttribute('tovar')->getFrontend()->getValue($product);
+                    $_product = Mage::getModel('catalog/product');
+
+                    $attr = $_product->getResource()->getAttribute("tovar");
+                    if ($attr->usesSource()) {
+                        $tov_id = $attr->getSource()->getOptionId($tovarvalue);
+                    }
+                    switch ($tov_id){
+                        case '7'://Чернильные картриджи
+                            $volume = $product->getResource()->getAttribute('volume')->getFrontend()->getValue($product);
+                            if($volume!='Нет'){echo '<dl class="product-params"><dt>объем:</dt><dd>'.$volume.'</dd></dl>';}
+                            $resurs = $product->getResource()->getAttribute('resurs')->getFrontend()->getValue($product);
+                            if($resurs!='Нет'){echo '<dl class="product-params"><dt>Ресурс:</dt><dd>'.$resurs.'</dd></dl>';}
+                            break;
+                        case '9'://Лазерные картриджи
+                            $resurs = $product->getResource()->getAttribute('resurs')->getFrontend()->getValue($product);
+                            if($resurs!='Нет'){echo '<dl class="product-params"><dt>Ресурс:</dt><dd>'.$resurs.'</dd></dl>';}
+                            break;
+                        case '5'://Перезаправляемые картриджи
+                             $volume = $product->getResource()->getAttribute('volume')->getFrontend()->getValue($product);
+                             if($volume!='Нет'){echo '<dl class="product-params"><dt>объем:</dt><dd>'.$volume.'</dd></dl>';}
+                         break;
+                        case '11'://Чернила
+                            $volume = $product->getResource()->getAttribute('volume')->getFrontend()->getValue($product);
+                            if($volume!='Нет'){echo '<dl class="product-params"><dt>объем:</dt><dd>'.$volume.'</dd></dl>';}
+                            $vidchernil = $product->getResource()->getAttribute('vidchernil')->getFrontend()->getValue($product);
+                            if($vidchernil!='Нет'){echo '<dl class="product-params"><dt>Тип чернил:</dt><dd>'.$vidchernil.'</dd></dl>';}
+                            break;
+                        case '4'://Промывочная жидкость
+                            break;
+                        case '12'://Тонер
+                            break;
+                        case '6'://Заправочные наборы
+                            $volume = $product->getResource()->getAttribute('volume')->getFrontend()->getValue($product);
+                            if($volume!='Нет'){echo '<dl class="product-params"><dt>объем:</dt><dd>'.$volume.'</dd></dl>';}
+                            break;
+                        case '3'://Фотобарабан
+                            $pcover = $product->getResource()->getAttribute('pcover')->getFrontend()->getValue($product);
+                            if($pcover!='Нет'){echo '<dl class="product-params"><dt>Цвет покрытия:</dt><dd>'.$pcover.'</dd></dl>';}
+                            break;
+					}?>
+					<dl class="product-params">
+						<dt>принтеры:</dt>
+						<dd>
+						<?php 
+							$cats = $product->getCategoryIds();
+
+							$ex = array("Default Category", "Печать");
+							foreach ($cats as $key => $item) {
+								$_cat = Mage::getModel('catalog/category')->load($item) ;
+								if($_cat->getLevel()<5){
+									unset($cats[$key]);
+								}
+							}
+												
+							foreach ($cats as $category_id) {
+								$_cat = Mage::getModel('catalog/category')->load($category_id) ;
+								echo $_cat->getName().', ';
+							}
+							echo ' ';
+						?>
+							<a href="<?php echo $_product->getProductUrl() ?>" class="more">показать все</a></dd>
+					</dl>
+                </div>
+            </div>
+			<div class="product-shop col-3">
+				<div class="f-fix">
+					<?php echo $this->getPriceHtml($product, true) ?>
+                    <?php if($_product->isSaleable()): ?>
+                        <p>
+						<div class="item-counter">
+						<div class="clear"></div>
+																<form action="<?php echo $this->getAddToCartUrl($_product) ?>" method="post" id="product_addtocart_form_<?php echo $_product->getId()?>"<?php if($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
+																	 <?php if(!$_product->isGrouped()): ?>
+																	 <input type="text" name="qty" id="qty" maxlength="12" value="<?php echo ($this->getMinimalQty($_product)?$this->getMinimalQty($_product):1) ?>" class="hidden"/>
+																	 <?php endif; ?>
+																	 <div class="item-counter">
+																		<input class="spinner" name="value" value="1">
+																		<button class="button btn green btn-basket" type="button" onclick="this.form.submit()"><span><?php echo $this->__('Купить') ?></span></button>
+																	</div>
+
+																 </form>
+						</div>
+
+						</p>
+                    <?php else: ?>
+                        <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+                    <?php endif; ?>
+				</div>
+			</div>
+        </li>
+    <?php endforeach; ?>
+    </ol>
+    <script type="text/javascript">decorateList('products-list', 'none-recursive');
+	function parseValue() {
+		jQuery(this).val(jQuery(this).siblings('.spinner').val());
+	}
+	if(typeof jQuery.fn.spinner === 'function'){
+		jQuery( ".spinner" ).spinner({ 
+			min: 1,
+			spin: function() {
+				jQuery(this).siblings('.spinner-text').val(jQuery(this).val());
+				jQuery(this).parent().parent().parent().find('input.hidden').val(jQuery(this).val());
+			},
+			stop: function() {
+				jQuery(this).siblings('.spinner-text').val(jQuery(this).val());
+				jQuery(this).parent().parent().parent().find('input.hidden').val(jQuery(this).val());
+			}
+		}).parent().append('<input class="spinner-text" type="text">');
+		jQuery('.spinner-text').each(parseValue);
+		jQuery('.spinner-text').change(function() {
+			jQuery(this).siblings('.spinner').val(parseInt(jQuery(this).val()));
+		});
+		jQuery('.spinner-text').blur(parseValue);
+	}
+
+	if(typeof jQuery.fn.spinner === 'function'){
+		jQuery( "#slider-range" ).slider({
+			range: true,
+			min: 0,
+			max: 500,
+			values: [ 75, 300 ],
+			slide: function( event, ui ) {
+				jQuery("#min-amount").val( ui.values[ 0 ] );
+				jQuery("#max-amount").val( ui.values[ 1 ] );
+			}
+		});
+		jQuery( "#min-amount" ).val( jQuery( "#slider-range" ).slider( "values", 0 ) );
+		jQuery( "#max-amount" ).val( jQuery( "#slider-range" ).slider( "values", 1 ) );
+	}
+	</script>
+
+    <?php else: ?>
+
+    <?php // Grid Mode ?>
+
+    <?php $_collectionSize = $_productCollection->count() ?>
+    <?php $_columnCount = $this->getColumnCount(); ?>
+    <?php $i=0; foreach ($_productCollection as $_product): ?>
+        <?php if ($i++%$_columnCount==0): ?>
+        <ul class="products-grid">
+        <?php endif ?>
+            <li class="item<?php if(($i-1)%$_columnCount==0): ?> first<?php elseif($i%$_columnCount==0): ?> last<?php endif; ?>">
+                <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(135); ?>" width="135" height="135" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+                <h2 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($_product->getName(), null, true) ?>"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></a></h2>
+                <?php if($_product->getRatingSummary()): ?>
+                <?php echo $this->getReviewsSummaryHtml($_product, 'short') ?>
+                <?php endif; ?>
+                <?php echo $this->getPriceHtml($_product, true) ?>
+                <div class="actions">
+                    <?php if($_product->isSaleable()): ?>
+                        <button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+                    <?php else: ?>
+                        <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+                    <?php endif; ?>
+                    <ul class="add-to-links">
+                        <?php if ($this->helper('wishlist')->isAllow()) : ?>
+                            <li><a href="<?php echo $this->helper('wishlist')->getAddUrl($_product) ?>" class="link-wishlist"><?php echo $this->__('Add to Wishlist') ?></a></li>
+                        <?php endif; ?>
+                        <?php if($_compareUrl=$this->getAddToCompareUrl($_product)): ?>
+                            <li><span class="separator">|</span> <a href="<?php echo $_compareUrl ?>" class="link-compare"><?php echo $this->__('Add to Compare') ?></a></li>
+                        <?php endif; ?>
+                    </ul>
+                </div>
+            </li>
+        <?php if ($i%$_columnCount==0 || $i==$_collectionSize): ?>
+        </ul>
+        <?php endif ?>
+        <?php endforeach ?>
+        <script type="text/javascript">decorateGeneric($$('ul.products-grid'), ['odd','even','first','last'])</script>
+    <?php endif; ?>
+    <div class="toolbar-bottom">
+        <?php echo $this->getToolbarHtml() ?>
+    </div>
+</div>
+
+<?php endif; ?>
+</div>

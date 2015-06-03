@@ -1,0 +1,41 @@
+<ol <?php if ($this->getCollapsed() && !$this->getHasSelection() && !('catalogsearch' == Mage::app()->getRequest()->getModuleName())) echo 'style="display:none"'?>  >
+
+<?php if (in_array($this->getDisplayType(), array(0, 2))): // default or categories with subcategories?>
+    <?php foreach ($this->getItems() as $_item): ?>
+        <li class="amshopby-cat-level-<?php echo max(1, $_item->getLevel())?>">
+            <a href="<?php echo $this->urlEscape($_item->getUrl()) ?>"><?php echo $_item->getLabel() ?></a>
+            (<?php echo $_item->getCount() ?>)
+        </li>
+    <?php endforeach ?>
+<?php elseif ($this->getDisplayType() == 3): // static expandable 2 level tree?>
+    <?php foreach ($this->getItems() as $_item): ?>
+        <?php
+            $level      = $_item->getLevel();
+            $additional = $_item->getIsFolded() ? 'style="display:none"' : '';
+            
+            $class      = 'amshopby-cat-level-' . $level;
+            if (1 != $level){
+                $class .= ' amshopby-cat-parentid-' . $_item->getId();    
+            }
+            
+            $showIcon = (1 == $level && $_item->getHasChildren());
+            $icon = ($_item->getIsChildSelected()) ? 'minus': 'plus';
+        ?>
+        <li class="<?php echo $class?>" <?php echo $additional?>>
+            <?php if ($showIcon): ?><span id="amshopby-cat-id-<?php echo $_item->getId()?>" class="amshopby-plusminus <?php echo $icon?>"></span><?php endif ?>
+            <a <?php if ($_item->getIsSelected()):?>class="amshopby-cat-selected"<?php endif?> href="<?php echo $this->urlEscape($_item->getUrl()) ?>"><?php echo $_item->getLabel() ?></a>
+            (<?php echo $_item->getCount() ?>)
+        </li>
+    <?php endforeach ?>
+<?php elseif (1 == $this->getDisplayType()): // dropdown ?>
+    <li>
+        <select onchange="if (this.value) setLocation(this.value)" class="amshopby-select">
+            <!-- uncomment to show Filter name in the dropdown <option value=""><?php echo $this->getName() ?></option>-->
+            <option value=""></option>
+            <?php foreach ($this->getItems() as $_item): ?>
+            <option  value="<?php echo $this->urlEscape($_item->getUrl()) ?>"><?php echo $_item->getLabel() ?> (<?php echo $_item->getCount() ?>)</option>
+            <?php endforeach ?>
+        </select>
+    </li>
+<?php endif ?>
+</ol>

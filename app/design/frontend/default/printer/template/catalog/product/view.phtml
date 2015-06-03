@@ -1,0 +1,277 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+
+/**
+ * Product view template
+ *
+ * @see Mage_Catalog_Block_Product_View
+ * @see Mage_Review_Block_Product_View
+ */
+?>
+<?php $_helper = $this->helper('catalog/output'); ?>
+<?php $_product = $this->getProduct(); ?>
+
+<script type="text/javascript">
+    var optionsPrice = new Product.OptionsPrice(<?php echo $this->getJsonConfig() ?>);
+</script>
+<div id="messages_product_view"><?php echo $this->getMessagesBlock()->getGroupedHtml() ?></div>
+<div class="product-view">
+	<div class="product-name">
+        <h1><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></h1>
+    </div>	
+	<div class="product-essential">
+    <form action="<?php echo $this->getSubmitUrl($_product) ?>" method="post" id="product_addtocart_form"<?php if($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
+        <section class="product-item">
+									<div class="product-img-box img-holder">
+										<?php echo $this->getChildHtml('media') ?>
+									</div>
+									<div class="wrap">
+										<div class="row">
+											
+											
+											<div class="col-1 price-box">
+												<?php echo $this->getChildHtml('product_type_data') ?>
+												<?php echo $this->getTierPriceHtml() ?>
+												<?php if (!$this->hasOptions()):?>
+													<div class="add-to-box">
+														<?php if($_product->isSaleable()): ?>
+															<?php echo $this->getChildHtml('addtocart') ?>
+														<?php endif; ?>
+													</div>
+													<?php echo $this->getChildHtml('extra_buttons') ?>
+												<?php endif; ?>
+												<?php $tovar = $_product->getResource()->getAttribute('tovar')->getFrontend()->getValue($_product);?>
+												<?php if ($tovar):?>
+												<dl class="product-params">
+													<dt>тип:</dt>
+													<dd><?php echo $tovar;?></dd>
+												</dl>
+												<?php endif; ?>
+												<?php $newcolor = $_product->getResource()->getAttribute('newcolor')->getFrontend()->getValue($_product);?>
+												<?php if ($newcolor):?>
+												<dl class="product-params">
+													<dt>цвет:</dt>
+													<dd><?php echo $newcolor;?></dd>
+												</dl>
+												<?php endif; ?>
+												<?php $resurs = $_product->getResource()->getAttribute('resurs')->getFrontend()->getValue($_product);?>
+												<?php if ($resurs):?>
+												<dl class="product-params">
+													<dt>ресурс:</dt>
+													<dd><?php echo $resurs;?></dd>
+												</dl>
+												<?php endif; ?>
+											</div>
+											<div class="col-2">
+												<h3 class="text-center">Способы получения товара</h3>
+												<div class="box">
+													<ul class="delivery-list">
+														<li>
+															<div class="holder">
+																<img src="/skin/frontend/default/printer/images/content/img-delivery-4.png" alt="img-description" width="19" height="32">
+															</div>
+															<strong class="title">Самовывоз</strong>
+															<p>В рабочее время</p>
+														</li>
+														<li>
+															<div class="holder">
+																<img src="/skin/frontend/default/printer/images/content/img-delivery-5.png" alt="img-description" width="38" height="32">
+															</div>
+															<strong class="title">Доставка</strong>
+															
+															<p>завтра,<br/>
+															<?php
+															$tomorrowd = date("d", time() + 86400);
+															$tomorrowm = date("n", time() + 86400);
+															
+															switch ($tomorrowm) { 
+																case 1: $tomorrowmr = 'января'; break;
+																case 2: $tomorrowmr = 'февраля'; break;
+																case 3: $tomorrowmr = 'марта'; break;
+																case 4: $tomorrowmr = 'апреля'; break;
+																case 5: $tomorrowmr = 'мая'; break;
+																case 6: $tomorrowmr = 'июня'; break;
+																case 7: $tomorrowmr = 'июля'; break;
+																case 8: $tomorrowmr = 'августа'; break;
+																case 9: $tomorrowmr = 'сентября'; break;
+																case 10: $tomorrowmr = 'октября'; break;
+																case 11: $tomorrowmr = 'ноября'; break;
+																case 12: $tomorrowmr = 'декабря'; break;
+															}
+															echo $tomorrowd.' '.$tomorrowmr;
+															?>
+															</p>
+														</li>
+														<li>
+															<div class="holder">
+																<img src="/skin/frontend/default/printer/images/content/img-delivery-6.png" alt="img-description" width="22" height="32">
+															</div>
+															<strong class="title">Почтой</strong>
+															<p>отправка,<br/><?php echo $tomorrowd.' '.$tomorrowmr; ?></p>
+															<?php
+																$tomorrow3d = date("d", time() + 86400*3);
+																$tomorrow3m = date("n", time() + 86400*3);
+																
+																switch ($tomorrow3m) { 
+																	case 1: $tomorrow3mr = 'января'; break;
+																	case 2: $tomorrow3mr = 'февраля'; break;
+																	case 3: $tomorrow3mr = 'марта'; break;
+																	case 4: $tomorrow3mr = 'апреля'; break;
+																	case 5: $tomorrow3mr = 'мая'; break;
+																	case 6: $tomorrow3mr = 'июня'; break;
+																	case 7: $tomorrow3mr = 'июля'; break;
+																	case 8: $tomorrow3mr = 'августа'; break;
+																	case 9: $tomorrow3mr = 'сентября'; break;
+																	case 10: $tomorrow3mr = 'октября'; break;
+																	case 11: $tomorrow3mr = 'ноября'; break;
+																	case 12: $tomorrow3mr = 'декабря'; break;
+																}
+															?>
+															<p>доставка,<br/><?php echo $tomorrow3d.' '.$tomorrow3mr; ?></p>
+														</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+										<p><?php echo $_product->getDescription(); ?></p>
+									</div>
+								</section>
+		<?php echo $this->getBlockHtml('formkey') ?>
+        <div class="no-display">
+            <input type="hidden" name="product" value="<?php echo $_product->getId() ?>" />
+            <input type="hidden" name="related_product" id="related-products-field" value="" />
+        </div>
+
+        <div class="product-shop">
+            
+
+            <?php echo $this->getChildHtml('alert_urls') ?>
+            
+            <?php echo $this->getChildHtml('extrahint') ?>
+
+            
+            <?php echo $this->getChildHtml('other');?>
+
+            <?php if ($_product->isSaleable() && $this->hasOptions()):?>
+                <?php echo $this->getChildChildHtml('container1', '', true, true) ?>
+            <?php endif;?>
+
+        </div>
+			<section class="product-model">
+									<strong class="choose-print">Выберите модель своего принтера Canon, чтобы увидеть все подходящие расходные материалы:</strong>
+									<div class="cols">
+										<div class="col">
+											<ul class="list">
+											<?php 
+												$cats = $_product->getCategoryIds();
+												$ex = array("Default Category", "Печать");
+												foreach ($cats as $key => $item) {
+													$_cat = Mage::getModel('catalog/category')->load($item) ;
+													if($_cat->getLevel()<5){
+														unset($cats[$key]);
+													}
+												}
+												
+												$cnt = count($cats);
+												$nummm = floor($cnt /6)+1;
+												$ii=1;
+												foreach ($cats as $category_id) {
+													$_cat = Mage::getModel('catalog/category')->load($category_id) ;
+													echo '<li><a href="'.$_cat->getUrl().'">'.$_cat->getName().'</a></li>';
+													$ii++;
+													if($ii % $nummm == 0) {
+													echo '</ul></div><div class="col"><ul class="list">';
+													}
+												}
+											?>
+											</ul>
+										</div>
+									</div>
+								</section>
+								
+								<?php echo $this->getChildHtml('product_review') ?>
+									
+							
+        
+
+        <div class="clearer"></div>
+        <?php if ($_product->isSaleable() && $this->hasOptions()):?>
+            <?php echo $this->getChildChildHtml('container2', '', true, true) ?>
+        <?php endif;?>
+    </form>
+    <script type="text/javascript">
+    //<![CDATA[
+        var productAddToCartForm = new VarienForm('product_addtocart_form');
+        productAddToCartForm.submit = function(button, url) {
+            if (this.validator.validate()) {
+                var form = this.form;
+                var oldUrl = form.action;
+
+                if (url) {
+                   form.action = url;
+                }
+                var e = null;
+                try {
+                    this.form.submit();
+                } catch (e) {
+                }
+                this.form.action = oldUrl;
+                if (e) {
+                    throw e;
+                }
+
+                if (button && button != 'undefined') {
+                    button.disabled = true;
+                }
+            }
+        }.bind(productAddToCartForm);
+
+        productAddToCartForm.submitLight = function(button, url){
+            if(this.validator) {
+                var nv = Validation.methods;
+                delete Validation.methods['required-entry'];
+                delete Validation.methods['validate-one-required'];
+                delete Validation.methods['validate-one-required-by-name'];
+                // Remove custom datetime validators
+                for (var methodName in Validation.methods) {
+                    if (methodName.match(/^validate-datetime-.*/i)) {
+                        delete Validation.methods[methodName];
+                    }
+                }
+
+                if (this.validator.validate()) {
+                    if (url) {
+                        this.form.action = url;
+                    }
+                    this.form.submit();
+                }
+                Object.extend(Validation.methods, nv);
+            }
+        }.bind(productAddToCartForm);
+    //]]>
+    </script>
+    </div>
+</div>

@@ -1,0 +1,36 @@
+<?php
+						$layer = Mage::getSingleton('catalog/layer');
+						$_category = $layer->getCurrentCategory();
+if($_category->getLevel()>3): ?>
+<?php if($this->canShowBlock()): ?>
+<div class="block block-layered-nav">
+    <div class="block-title">
+        <strong><span><?php echo $this->__('Shop By') ?></span></strong>
+    </div>
+    <div class="block-content">
+        <?php echo $this->getStateHtml() ?>
+        <?php if($this->canShowOptions()): ?>
+            <p class="block-subtitle"><?php echo $this->__('Shopping Options') ?></p>
+            <dl id="narrow-by-list">
+                <table><tr>
+                <?php foreach ($this->getFilters() as $_filter): ?>
+                <?php if($_filter->getItemsCount()): ?>
+                <td width="165px">
+                    <dt></dt>
+                    <dd style="background:none"><?php echo $_filter->getHtml() ?></dd>
+                </td>
+                <?php endif; ?>
+                <?php endforeach; ?>
+                </tr></table>
+            </dl>
+						<script type="text/javascript">
+
+</script>
+            <script type="text/javascript">decorateDataList('narrow-by-list')</script>
+        <?php endif; ?>
+    </div>
+</div>
+<?php else: ?>
+<div style="display:none" class="<?php echo $this->getBlockId()?>"></div>
+<?php endif; ?>
+<?php endif; ?>

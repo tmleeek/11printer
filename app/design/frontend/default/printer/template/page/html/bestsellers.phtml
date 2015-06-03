@@ -1,0 +1,53 @@
+<?php
+$_productCollection = Mage::getModel('catalog/product')->getCollection();
+$_productCollection->addAttributeToSelect('name');
+$_productCollection->addAttributeToSelect('price');
+$_productCollection->addAttributeToSelect('small_image');
+$_productCollection->addAttributeToFilter('bestseller', 1);
+$_productCollection->setPageSize(10);	
+$_helper = $this->helper('catalog/output');
+ ?>
+<section class="best-sales">
+					<header class="heading">
+						<h2>Наши лидеры продаж</h2>
+					</header>
+					<div class="holder">
+						
+<?php if(!$_productCollection->count()): ?>
+	<p class="note-msg"><?php echo $this->__('There are no products matching the selection.') ?></p>
+<?php else: ?>
+	<ul class="list">
+		<?php 
+		$i = 0;
+		foreach ($_productCollection as $_product): ?>
+		<?php 
+		$i++;
+		?>
+			<li class="item">
+				<div class="block">
+					<figure>
+						<div class="img-holder">
+							<a href="<?php echo $_product->getProductUrl() ?>">
+								<div class="box">
+									<div class="frame">
+										<img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(135); ?>" width="135" height="135" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" />
+									</div>
+								</div>
+							</a>
+						</div>
+						<figcaption>
+						<h3 class="product-title"><a href="<?php echo $_product->getProductUrl() ?>"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></a></h3>
+						<?php echo $this->getPriceHtml($_product, true) ?>
+						</figcaption>
+					</figure>
+				</div>
+				
+            </li>
+		<?php 
+		if($i == 5){
+		echo "</ul><ul class=\"list\">";
+		}
+		?>
+		<?php endforeach; ?>
+	</ul>
+<?php endif; ?>

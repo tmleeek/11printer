@@ -1,0 +1,62 @@
+<?php 
+$collection1 = Mage::getModel('catalog/category')->getCategories(3);
+$helper     = Mage::helper('catalog/category');
+?>
+
+	<div class="tabset-holder">
+		<div class="container">
+			<div class="inner">
+				<ul class="tabset">
+					<?foreach ($collection1 as $cat1):?>
+					<?php $cur_category = $cat1->getId();	?>
+					<li>
+						<a href="#tab-<?php echo $cur_category;?>">
+							<div class="link-holder">
+								<div class="link-frame"><?php echo $cat1->getName();?></div>
+							</div>
+						</a>
+					</li>
+					 <?php endforeach;?> 
+				</ul>
+			</div>
+		</div>
+	</div>
+	<?php $collection2 = Mage::getModel('catalog/category')->getCategories(3); ?>
+	<div class="tab-list">
+		<?foreach ($collection2 as $cat2):?>
+			<?php $сcur_category = $cat2->getId();	?>
+			<div id="tab-<?php echo $сcur_category;?>" class="tab">
+				<div class="print-models">
+						<?php $subcoll = $cat2->getChildrenNodes()?>
+						<?foreach ($subcoll as $scat):?>
+							<div class="print-models">
+								<?php $subcatcoll = $scat->getChildrenNodes()?>
+								<h2 class="category-name"><?php echo $scat->getName();?><em class="count">(<?php echo count($scat->getChildrenNodes());?>)</em></h2>
+								<div class="cols">
+									<div class="col">
+										<ul class="list">
+										<?php 
+												$cnt = count($scat->getChildrenNodes());
+												$nummm = floor($cnt /5)+1;
+												$ii=1;
+										?>
+										<?foreach ($subcatcoll as $scatc):?>
+											<li><a href="<?php echo $scatc->getUrl();?>"><?php echo $scatc->getName();?></a></li>
+											<?php $ii++;?>
+											<?php if($ii % $nummm == 0) {
+													echo '</ul></div><div class="col"><ul class="list">';
+													}?>
+										<?php endforeach;?>
+													
+															
+										</ul>
+									</div>
+								</div>
+							</div>
+						<?php endforeach;?>
+					 
+				</div>
+			</div>
+		<?php endforeach;?> 
+	</div>
+								

@@ -1,0 +1,55 @@
+header,
+footer,
+section,
+article,
+hgroup,
+nav,
+figure{display: block;}
+body{
+	background: #f2f2f2;
+	color: #545454;
+	font: 400 14px/24px 'Open Sans', Arial, Helvetica, sans-serif;
+	margin: 0;
+	min-width: 1320px;
+	-webkit-text-size-adjust: 100%;
+}
+q{quotes: none;}
+q:before,
+q:after{content: '';}
+img{border: none;}
+a{
+	color: #0072c0;
+	text-decoration: none;
+}
+a:hover{text-decoration: none;}
+form,
+fieldset{
+	border-style: none;
+	margin: 0;
+	padding: 0;
+	-moz-appearance:none;
+	-webkit-appearance:none;
+}
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+input[type="submit"]{
+	font: 12px Arial, Helvetica, sans-serif;
+	vertical-align: middle;
+	-webkit-appearance: none;
+	-webkit-border-radius: 0;
+	-webkit-box-shadow: none;
+}
+button::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner{
+	border: 0;
+	padding: 0;
+}
+audio,
+canvas,
+video{display: inline-block;}
+figure{
+	margin: 0;
+	padding: 0;
+}

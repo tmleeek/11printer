@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<config>
+	<modules>
+        <Ooops_Catalog>
+            <version>0.1.0</version>
+        </Ooops_Catalog>
+    </modules>
+	
+	<frontend>
+		<routers>
+			<catalog>
+				<args>
+					<modules>
+						<Ooops_Catalog before="Mage_Catalog">Ooops_Catalog</Ooops_Catalog>
+					</modules>
+				</args>
+			</catalog>
+		</routers>
+	</frontend>
+	<global>
+        <blocks>
+           <catalog>
+              <rewrite>
+                  <product_list_toolbar>Ooops_Catalog_Block_Product_List_Toolbar</product_list_toolbar>
+              </rewrite>
+           </catalog>
+        </blocks>
+        <helpers>
+            <catalog>
+                <rewrite>
+                    <data>Ooops_Catalog_Helper_Data</data>
+                </rewrite>
+            </catalog>
+        </helpers>
+    </global>
+</config>
